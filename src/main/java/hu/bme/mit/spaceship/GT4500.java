@@ -90,8 +90,5 @@ public class GT4500 implements SpaceShip {
   }
 
 }
-<<<<<<< HEAD
 // Branch-A
-=======
 // Branch-B
->>>>>>> Branch-B
