@@ -6,6 +6,9 @@
 	<version>0.5.0-SNAPSHOT</version>
 
 	<properties>
+		<sonar.projectKey>BazsEdu00144_ivt-lab</sonar.projectKey>
+  		<sonar.organization>bazsedu00144</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
