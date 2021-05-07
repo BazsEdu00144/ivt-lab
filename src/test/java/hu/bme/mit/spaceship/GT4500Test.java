@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 
-public class GT4500Test {
 
+public class GT4500Test {
   private GT4500 ship;
   private TorpedoStore mockPrimary;
   private TorpedoStore mockSecondary;
@@ -175,20 +177,72 @@ public class GT4500Test {
 
     when(m_mockPrimary.isEmpty()).thenReturn(false);
     when(m_mockSecondary.isEmpty()).thenReturn(false);
-    when(m_mockPrimary.fire(1)).thenReturn(false);
-    when(m_mockSecondary.fire(1)).thenReturn(true);
+    when(m_mockPrimary.fire(1)).thenReturn(true);
+    when(m_mockSecondary.fire(1)).thenReturn(false);
 
     boolean success = m_ship.fireTorpedo(FiringMode.ALL);
 
     //sikerült a lövés
     assertEquals( true, success);
 
-    // meghívta az elsőt és másodikat is 
+    when(m_mockPrimary.fire(1)).thenReturn(false);
+    when(m_mockSecondary.fire(1)).thenReturn(true);
+
+    success = m_ship.fireTorpedo(FiringMode.ALL);
+
+    //sikerült a lövés
+    assertEquals( true, success);
+
+    when(m_mockPrimary.fire(1)).thenReturn(false);
+    when(m_mockSecondary.fire(1)).thenReturn(false);
+
+    success = m_ship.fireTorpedo(FiringMode.ALL);
+
+    //nem sikerült a lövés
+    assertEquals( false, success);
+  }
+
+  @Test
+  public void EmptySingleFire() {
+    TorpedoStore m_mockPrimary = mock(TorpedoStore.class);
+    TorpedoStore m_mockSecondary = mock(TorpedoStore.class);
+    GT4500 m_ship = new GT4500();
+    m_ship.setTorpedoStores(m_mockPrimary, m_mockSecondary);
+
+    when(m_mockPrimary.isEmpty()).thenReturn(true);
+    when(m_mockSecondary.isEmpty()).thenReturn(true);
+
+    boolean success = m_ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(m_mockPrimary, times(0)).fire(1);
+    verify(m_mockSecondary, times(0)).fire(1);
+    assertEquals( false, success);
+
+    when(m_mockPrimary.isEmpty()).thenReturn(false);
+    m_ship.fireTorpedo(FiringMode.SINGLE);
+    when(m_mockPrimary.isEmpty()).thenReturn(true);
+
+    success = m_ship.fireTorpedo(FiringMode.SINGLE);
+
     verify(m_mockPrimary, times(1)).fire(1);
-    verify(m_mockSecondary, times(1)).fire(1);
+    verify(m_mockSecondary, times(0)).fire(1);
+    assertEquals( false, success);
+  }
+
+  @Test
+  public void EmptyAllFire() {
+    TorpedoStore m_mockPrimary = mock(TorpedoStore.class);
+    TorpedoStore m_mockSecondary = mock(TorpedoStore.class);
+    GT4500 m_ship = new GT4500();
+    m_ship.setTorpedoStores(m_mockPrimary, m_mockSecondary);
+
+    when(m_mockPrimary.isEmpty()).thenReturn(true);
+    when(m_mockSecondary.isEmpty()).thenReturn(true);
+
+    boolean success = m_ship.fireTorpedo(FiringMode.ALL);
+    verify(m_mockPrimary, times(0)).fire(1);
+    verify(m_mockSecondary, times(0)).fire(1);
+    assertEquals( false, success);
   }
 }
-
-
-
 
